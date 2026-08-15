@@ -8,6 +8,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { getToken } from "@/lib/auth-server";
 import { fetchQuery, preloadQuery } from "convex/nextjs";
 import { ArrowLeft } from "lucide-react";
+import { redirect } from "next/dist/client/components/navigation";
 import { Metadata } from "next/dist/lib/metadata/types/metadata-interface";
 import Image from "next/image";
 import Link from "next/link";
@@ -60,6 +61,10 @@ async function PostContent({ params }: PostIdRouteProps) {
 		await fetchQuery(api.presence.getUserId, {}, { token }),
 	]);
 
+	if (!userId) {
+		redirect("/auth/login");
+	}
+
 	if (!post) {
 		return (
 			<h1 className='text-6xl font-extrabold text-red-500 py-20'>No post found</h1>
@@ -86,15 +91,19 @@ async function PostContent({ params }: PostIdRouteProps) {
 				<h1 className='text-3xl font-bold mt-4 tracking-tight text-foreground'>
 					{post.title ?? "Placeholder Title"}
 				</h1>
-				<p className='text-sm text-muted-foreground m-0'>
-					Upload Date: {new Date(post._creationTime).toLocaleDateString()}
-				</p>
-				{userId && (
-					<PostPresence
-						roomId={postId}
-						userId={userId}
-					/>
-				)}
+				<div
+					className='flex items-center gap-2
+				'>
+					<p className='text-sm text-muted-foreground m-0'>
+						Upload Date: {new Date(post._creationTime).toLocaleDateString()}
+					</p>
+					{userId && (
+						<PostPresence
+							roomId={postId}
+							userId={userId}
+						/>
+					)}
+				</div>
 				<Separator className='my-8' />
 				<p className='text-lg leading-relaxed text-foreground/90 whitespace-pre-wrap'>
 					{post.content}

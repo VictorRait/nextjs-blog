@@ -18,8 +18,8 @@ export function PostPresence({ roomId, userId }: roomProps) {
 	}
 
 	return (
-		<div className='flex items-center gap-2 '>
-			<p className='text-xs text-muted-foreground uppercase tracking-loose'>
+		<div className='flex items-center gap-2  text-black'>
+			<p className='text-sm text-muted-foreground uppercase tracking-loose'>
 				Viewing now
 			</p>
 			<FacePile presenceState={presenceState} />
