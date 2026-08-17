@@ -28,18 +28,18 @@ export default function BlogPage() {
 				</p>
 			</div>
 
-			<Suspense fallback={<SkeletonLoading />}>
-				<LoadBlogPage />
-			</Suspense>
+			{/* <Suspense fallback={<SkeletonLoading />}> can comment out because it's cached */}
+			<LoadBlogList />
+			{/* </Suspense> */}
 		</div>
 	);
 }
 
-async function LoadBlogPage() {
+async function LoadBlogList() {
 	"use cache";
 
 	cacheTag("blog");
-	cacheLife({ revalidate: 60 });
+	cacheLife("hours");
 	const data = await fetchQuery(api.posts.getPosts);
 	return (
 		<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>

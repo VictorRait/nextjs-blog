@@ -35,18 +35,7 @@ export async function generateMetadata({ params }: PostIdRouteProps): Promise<Me
 }
 
 async function PostIdRoute({ params }: PostIdRouteProps) {
-	return (
-		<Suspense
-			fallback={
-				<>
-					<Skeleton className='h-4 w-full' />
-					<Skeleton className='h-4 w-full' />
-				</>
-			}>
-			{" "}
-			<PostContent params={params} />
-		</Suspense>
-	);
+	return <PostContent params={params} />;
 }
 
 async function PostContent({ params }: PostIdRouteProps) {
@@ -54,11 +43,11 @@ async function PostContent({ params }: PostIdRouteProps) {
 
 	const token = await getToken();
 	const [post, preloadComments, userId] = await Promise.all([
-		await fetchQuery(api.posts.getPostById, { postId }),
-		await preloadQuery(api.comments.getCommentsById, {
+		fetchQuery(api.posts.getPostById, { postId }),
+		preloadQuery(api.comments.getCommentsById, {
 			postId: postId,
 		}),
-		await fetchQuery(api.presence.getUserId, {}, { token }),
+		fetchQuery(api.presence.getUserId, {}, { token }),
 	]);
 
 	if (!userId) {
