@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { ConvexError, v } from "convex/values";
 import { authComponent } from "./auth";
+import { Doc } from "./_generated/dataModel";
 
 export const createPost = mutation({
 	args: { title: v.string(), body: v.string(), imageStorageId: v.id("_storage") },
@@ -67,5 +68,54 @@ export const getPostById = query({
 				: null;
 
 		return { ...post, resolvedImageUrl };
+	},
+});
+
+interface searchResultTypes {
+	_id: string;
+	title: string;
+	body: string;
+}
+
+export const searchPost = query({
+	args: {
+		terms: v.string(),
+		limit: v.number(),
+	},
+	handler: async (ctx, args) => {
+		const limit = args.limit;
+		const results: Array<searchResultTypes> = [];
+		const seen = new Set();
+
+		const pushDocs = async (docs: Array<Doc<"posts">>) => {
+			for (const doc of docs) {
+				if (seen.has(doc._id)) continue;
+
+				seen.add(doc._id);
+				results.push({
+					_id: doc._id,
+					title: doc.title,
+					body: doc.content,
+				});
+				if (results.length >= limit) break;
+			}
+		};
+
+		const titleMatches = await ctx.db
+			.query("posts")
+			.withSearchIndex("search_title", (q) => q.search("title", args.terms))
+			.take(limit);
+
+		await pushDocs(titleMatches);
+
+		if (results.length < limit) {
+			const contentMatches = await ctx.db
+				.query("posts")
+				.withSearchIndex("search_content", (q) => q.search("content", args.terms))
+				.take(limit - results.length);
+			await pushDocs(contentMatches);
+		}
+
+		return results;
 	},
 });
