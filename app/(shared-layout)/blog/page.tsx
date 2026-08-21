@@ -29,19 +29,19 @@ export default function BlogPage() {
 				</p>
 			</div>
 
-			<Suspense fallback={<SkeletonLoading />}>
-				{/* can comment out because it's cached */}
-				<LoadBlogList />
-			</Suspense>
+			{/* <Suspense fallback={<SkeletonLoading />}> */}
+			{/* can comment out because it's cached */}
+			<LoadBlogList />
+			{/* </Suspense> */}
 		</div>
 	);
 }
 
 async function LoadBlogList() {
-	// "use cache";
+	"use cache";
 
-	// cacheTag("blog");
-	// cacheLife("hours");
+	cacheTag("blog");
+	cacheLife("hours");
 
 	await connection();
 	const data = await fetchQuery(api.posts.getPosts);
