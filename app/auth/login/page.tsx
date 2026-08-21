@@ -40,6 +40,7 @@ function LoginPage() {
 					onSuccess: () => {
 						toast.success("Logged in successfully");
 						router.push("/");
+						router.refresh();
 					},
 					onError: (error) => {
 						toast.error(error.error.message);
