@@ -29,9 +29,10 @@ export default function BlogPage() {
 				</p>
 			</div>
 
-			{/* <Suspense fallback={<SkeletonLoading />}> can comment out because it's cached */}
-			<LoadBlogList />
-			{/* </Suspense> */}
+			<Suspense fallback={<SkeletonLoading />}>
+				{/* can comment out because it's cached */}
+				<LoadBlogList />
+			</Suspense>
 		</div>
 	);
 }
