@@ -8,6 +8,7 @@ import { cacheLife } from "next/dist/server/use-cache/cache-life";
 import { cacheTag } from "next/dist/server/use-cache/cache-tag";
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -36,10 +37,12 @@ export default function BlogPage() {
 }
 
 async function LoadBlogList() {
-	"use cache";
+	// "use cache";
 
-	cacheTag("blog");
-	cacheLife("hours");
+	// cacheTag("blog");
+	// cacheLife("hours");
+
+	await connection();
 	const data = await fetchQuery(api.posts.getPosts);
 	return (
 		<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
