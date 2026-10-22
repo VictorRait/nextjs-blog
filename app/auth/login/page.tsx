@@ -33,10 +33,10 @@ function LoginPage() {
 
 	function onSubmit(data: z.infer<typeof loginSchema>) {
 		startTransition(async () => {
-			await authClient.signIn.email({
-				email: data.email,
-				password: data.password,
-				fetchOptions: {
+			await authClient.signIn.email(
+				{ email: data.email, password: data.password },
+
+				{
 					onSuccess: () => {
 						toast.success("Logged in successfully");
 						router.push("/");
@@ -46,7 +46,7 @@ function LoginPage() {
 						toast.error(error.error.message);
 					},
 				},
-			});
+			);
 		});
 	}
 	return (
