@@ -39,8 +39,7 @@ function LoginPage() {
 				{
 					onSuccess: () => {
 						toast.success("Logged in successfully");
-						router.push("/");
-						router.refresh();
+						window.location.href = "/";
 					},
 					onError: (error) => {
 						toast.error(error.error.message);
